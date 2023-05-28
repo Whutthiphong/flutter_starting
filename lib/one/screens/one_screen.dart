@@ -27,7 +27,7 @@ class _OneScreenState extends State<OneScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => OneBloc(),
+      create: (context) => _bloc,
       child: BlocConsumer<OneBloc, OneState>(
         bloc: _bloc,
         listener: (context, state) {
@@ -53,7 +53,12 @@ class _OneScreenState extends State<OneScreen> {
             appBar: AppBar(title: const Text('One Screen')),
             body: Column(
               children: [
-                Expanded(child: Text('Count => ${state.count}')),
+                Expanded(
+                    child:
+                        Text('Count => ${state.data1?.description ?? "---"}')),
+                state.en == OneEnum.isLoading
+                    ? CircularProgressIndicator()
+                    : Container(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -63,6 +68,12 @@ class _OneScreenState extends State<OneScreen> {
                           _bloc.add(AddEvent());
                         },
                         child: const Text("ADD (+)")),
+                    ElevatedButton(
+                        onPressed: () {
+                          // BlocProvider.of<OneBloc>(context).add(AddEvent());
+                          _bloc.add(GetDataEvent());
+                        },
+                        child: const Text("Call Api")),
                     ElevatedButton(
                         onPressed: () {
                           _bloc.add(ResetEvent(100));
